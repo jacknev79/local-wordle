@@ -7,7 +7,7 @@ class Word():
         guess = input('Please enter your guess: ')
         return guess
 
-    def word_check(self, guess):
+    def word_check(self, guess, user):
         count = 0
         if len(guess) != len(self._word):
             raise ValueError(f'Guess must be {len(self._word)} letters exactly!')
@@ -21,10 +21,15 @@ class Word():
                 print('<miss>', end=' ')
         if count == len(self._word):
             print(f'You win! The word was: {self._word}. \nYou won with {self._guesses-1} guesses remaining!')
+            user.points = user.points + (self._guesses * 10)
+            user.guesses += (7-self._guesses)
             return False
+        
         self._guesses -= 1
         if self._guesses == 0:
             print(f'You lose! The word was: {self._word}')
+            user.points -= 10
+            user.guesses += 6
             return False
         if self._guesses == 1:
             print(f'\nYou have {self._guesses} guess left')

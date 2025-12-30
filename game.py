@@ -1,11 +1,37 @@
 import random as rand
 from word import Word
+from user import User
+import shelve
 
 class Game():
     def __init__(self, words):
         self.words = words 
         self._points = 0
         self._difficulty = 5
+        self._usr = ''      #will be a user object
+
+    def login(self, name= False):
+        if not name:
+            self.register()
+        else:
+            db = shelve.open('users')
+            if name in db:
+                self._usr = db[name]
+                db.close()
+            else:
+                db.close()
+                self.register()
+
+
+    def register(self):
+        name = input('Please enter a username: ')
+        if name == '':
+            self.register()
+        user = User(name)
+        db = shelve.open('users')
+        db[name] = user
+        db.close()
+
 
     def chooseWord(self, length):
         word = rand.choice(self.words)
@@ -15,6 +41,7 @@ class Game():
         return word
 
     def createGame(self):
+        db = shelve.open('users', writeback=True)
         self.chooseDifficulty()
         wordinit = self.chooseWord(self._difficulty)
 
@@ -23,17 +50,23 @@ class Game():
         print(word.word)
         
         gameOn = True
-
+        
         while gameOn:
-            gameOn = word.word_check(word.getGuess())
+            try:
+                gameOn = word.word_check(word.getGuess(), self._usr)   #NB getGuess() used to get user input, not usual getter
+            except ValueError as e:
+                print(e)
+            # except Exception:
+            #     db.close()
         #NB handle points system
         #need add shelving/ pickling to maintain local leaderboard
             
-        
+        db[self._usr.name] = self._usr
         continuegame = input('Press enter/ return to continue with a new word.')
         if continuegame == '':
+            db.close()
             self.createGame()
-        return
+        db.close()
 
     def chooseDifficulty(self):
         self._difficulty = input('Choose the length of the word (min 5), or leave blank for Traditional Wordle: ')

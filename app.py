@@ -1,6 +1,6 @@
 import tkinter as tk
 from game import Game
-
+import shelve 
 
 higherwordlist = ['electricity', 'donkey', 'hardware', 'xerox', 'transistor', 'computer', 'desktop',
 'engineering', 'hangman', 'circuit', 'imagination', 'robot', 'memory', 'power', 
@@ -40,4 +40,14 @@ print(max(lengths), min(lengths))
 
 game = Game(wordlist)
 
+db = shelve.open('users')
+for key in db:
+    print(db[key])
+db.close()
+
+name = input('Please enter your username, or leave blank for registration: ')
+if name == '':
+    game.register()
+else:
+    game.login(name)
 game.createGame()
