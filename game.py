@@ -66,7 +66,16 @@ class Game():
         if continuegame == '':
             db.close()
             self.createGame()
+            return
+        print('LEADERBOARD')
+        users = []
+        for key in db:
+            users.append((db[key], db[key].points))
+        users.sort(key= lambda x : x[1], reverse=True)
+        for tup in users:
+            print(tup[0])
         db.close()
+        return 
 
     def chooseDifficulty(self):
         self._difficulty = input('Choose the length of the word (min 5), or leave blank for Traditional Wordle: ')

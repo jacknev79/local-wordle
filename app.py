@@ -41,10 +41,15 @@ print(max(lengths), min(lengths))
 game = Game(wordlist)
 
 db = shelve.open('users')
+print('LEADERBOARD')
+users = []
 for key in db:
-    print(db[key])
+    users.append((db[key], db[key].points))
+users.sort(key= lambda x : x[1], reverse=True)
+for tup in users:
+    print(tup[0])
 db.close()
-
+print()
 name = input('Please enter your username, or leave blank for registration: ')
 if name == '':
     game.register()
