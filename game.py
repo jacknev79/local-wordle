@@ -6,12 +6,12 @@ import shelve
 class Game():
     def __init__(self, words):
         self.words = words 
-        self._points = 0
         self._difficulty = 5
-        self._usr = ''      #will be a user object
+        self._usr = User()      #will be a user object to handle errors in login/ registration
 
     def login(self, name= False):
         if not name:
+            print('No username provided, beginning registration.')
             self.register()
         else:
             db = shelve.open('users')
@@ -22,16 +22,15 @@ class Game():
                 db.close()
                 self.register()
 
-
     def register(self):
-        name = input('Please enter a username: ')
+        name = input('Please enter a new username: ')
         if name == '':
             self.register()
         user = User(name)
         db = shelve.open('users')
         db[name] = user
+        self._usr = user
         db.close()
-
 
     def chooseWord(self, length):
         word = rand.choice(self.words)
@@ -47,19 +46,15 @@ class Game():
 
         word = Word(wordinit)
 
-        print(word.word)
+        #print(word.word)
         
         gameOn = True
         
         while gameOn:
             try:
-                gameOn = word.word_check(word.getGuess(), self._usr)   #NB getGuess() used to get user input, not usual getter
+                gameOn = word.word_check(word.getGuess(self.words), self._usr)   #NB getGuess() used to get user input, not usual getter
             except ValueError as e:
                 print(e)
-            # except Exception:
-            #     db.close()
-        #NB handle points system
-        #need add shelving/ pickling to maintain local leaderboard
             
         db[self._usr.name] = self._usr
         continuegame = input('Press enter/ return to continue with a new word.')
@@ -84,11 +79,3 @@ class Game():
             self._difficulty = 5
         else:
             self._difficulty = int(self._difficulty)
-
-    def getPoints(self):
-        return self._points
-    
-    def setPoints(self, new):
-        self._points = new
-
-    points = property(getPoints,setPoints)

@@ -3,8 +3,10 @@ class Word():
         self._word = word
         self._guesses = 6
 
-    def getGuess(self):
+    def getGuess(self, wordlist):
         guess = input('Please enter your guess: ')
+        if guess not in wordlist:
+            raise ValueError('Please guess a proper/ more common word!')
         return guess
 
     def word_check(self, guess, user):
@@ -21,7 +23,7 @@ class Word():
                 print('<miss>', end=' ')
         if count == len(self._word):
             print(f'You win! The word was: {self._word}. \nYou won with {self._guesses-1} guesses remaining!')
-            user.points = user.points + (self._guesses * 10)
+            user.points += (self._guesses * 10)
             user.guesses += (7-self._guesses)
             return False
         
