@@ -2,6 +2,9 @@ class Word():
     def __init__(self, word):
         self._word = word
         self._guesses = 6
+        self.pairs = []
+        self.triples = []
+        self.getPairs()
 
     def getGuess(self, wordlist):
         guess = input('Please enter your guess: ')
@@ -10,15 +13,46 @@ class Word():
         return guess
 
     def word_check(self, guess, user):
+        guessed = []
+        paircheck = []      #holds letters that occur twice and have been guessed twice
+        
         count = 0
         if len(guess) != len(self._word):
             raise ValueError(f'Guess must be {len(self._word)} letters exactly!')
         for i in range(len(self._word)):
             if self._word[i] == guess[i]:
                 print('<hit>', end=' ')
-                count += 1
+                count += 1       
+                guessed.append(guess[i])     
             elif guess[i] in self._word:
-                print('<near>', end=' ')
+                if guess[i] in self.pairs or guess[i] in self.triples:
+                    if guess[i] in guessed:
+                        if guess[i] in paircheck:
+                            #guessed twice already
+                            print('<miss>', end=' ')
+                        else:#guessed once before
+                            rest_of_guess = guess[i:]
+                            rest_of_word = self.word[i:]
+                            for n in range(len(rest_of_guess)):
+                                check = False
+                                if rest_of_guess[n] == rest_of_word[n]:
+                                    print('<miss>', end=' ')
+                                    check = True
+                                    break
+                                
+                            if guess[i] not in self.triples:
+                                paircheck.append(guess[i])
+                            if not check:
+                                print('<near>', end=' ')
+                    else:#not guessed yet
+                        guessed.append(guess[i])
+                        print('<near>', end=' ')           
+                else:
+                    if guess[i] in guessed:
+                        print('<miss>', end=' ')
+                    else:
+                        guessed.append(guess[i])
+                        print('<near>', end=' ')
             else:
                 print('<miss>', end=' ')
         if count == len(self._word):
@@ -40,6 +74,17 @@ class Word():
             print(f'\nYou have {self._guesses} guesses left')
             return True
 
+    def getPairs(self):
+        letters = []
+        for char in self.word:
+            if char not in letters:
+                letters.append(char)
+            elif char in self.pairs:
+                self.triples.append(char)
+                self.pairs.remove(char)
+            else:
+                self.pairs.append(char)
+
     def GetWord(self):
         return self._word
     
@@ -51,3 +96,12 @@ class Word():
     
     word = property(GetWord, SetWord)
     guesses = property(getGuesses)
+
+def test():
+    word = Word('axplp')
+    print(word.pairs)
+    word.word_check('hlleo', '')
+    word.word_check('apxpp', '')
+
+if __name__ == '__main__':
+    test()

@@ -1,5 +1,5 @@
 class User():
-    def __init__(self, name):
+    def __init__(self, name = 'default'):
         self.name = name
         self.points = 0
         self.guesses = 0

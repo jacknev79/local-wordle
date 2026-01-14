@@ -6,8 +6,15 @@ import shelve
 class Game():
     def __init__(self, words):
         self.words = words 
+        self.valid = []
         self._difficulty = 5
-        self._usr = User()      #will be a user object to handle errors in login/ registration
+        self._usr = User('default')      #will be a user object to handle errors in login/ registration
+
+        inFile = open('valid-wordle-words.txt','r')
+        for word in inFile:
+            word = word.strip()
+            self.valid.append(word)
+        inFile.close()
 
     def login(self, name= False):
         if not name:
