@@ -52,14 +52,14 @@ class Game():
         wordinit = self.chooseWord(self._difficulty)
 
         word = Word(wordinit)
-
+        #uncomment below line to see word while playing!
         #print(word.word)
         
         gameOn = True
         
         while gameOn:
             try:
-                gameOn = word.word_check(word.getGuess(self.words), self._usr)   #NB getGuess() used to get user input, not usual getter
+                gameOn = word.word_check(word.getGuess(self.valid), self._usr)   #NB getGuess() used to get user input, not usual getter
             except ValueError as e:
                 print(e)
             

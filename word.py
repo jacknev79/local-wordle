@@ -6,11 +6,16 @@ class Word():
         self.triples = []
         self.getPairs()
 
+    def __str__(self):
+        return self._word
+
     def getGuess(self, wordlist):
         guess = input('Please enter your guess: ')
         if guess not in wordlist:
             raise ValueError('Please guess a proper/ more common word!')
-        return guess
+        if not guess.isalpha():
+            raise ValueError('Please enter only alphabetical characters.')
+        return guess.lower()
 
     def word_check(self, guess, user):
         guessed = []
@@ -60,8 +65,8 @@ class Word():
             user.points += (self._guesses * 10)
             user.guesses += (7-self._guesses)
             return False
-        
         self._guesses -= 1
+
         if self._guesses == 0:
             print(f'You lose! The word was: {self._word}')
             user.points -= 10
@@ -101,6 +106,7 @@ def test():
     word = Word('axplp')
     print(word.pairs)
     word.word_check('hlleo', '')
+    word.word_check('yee5t', '')
     word.word_check('apxpp', '')
 
 if __name__ == '__main__':
