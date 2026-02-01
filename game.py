@@ -8,7 +8,7 @@ class Game():
         self.words = words 
         self.valid = []
         self._difficulty = 5
-        self._usr = User('default')      #will be a user object to handle errors in login/ registration
+        self._usr = User('default')      #init'd as a user object to handle any errors in login/ registration
 
         inFile = open('valid-wordle-words.txt','r')
         for word in inFile:
@@ -41,9 +41,10 @@ class Game():
 
     def chooseWord(self, length):
         word = rand.choice(self.words)
-        while len(word) != length:
+        while len(word) != length or word in self._usr.guessed_words:
             word = rand.choice(self.words)
 
+        self._usr.guessed_words.append(word)
         return word
 
     def createGame(self):
@@ -52,6 +53,7 @@ class Game():
         wordinit = self.chooseWord(self._difficulty)
 
         word = Word(wordinit)
+
         #uncomment below line to see word while playing!
         #print(word.word)
         
